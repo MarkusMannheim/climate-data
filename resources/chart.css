@@ -1,0 +1,49 @@
+@font-face {
+  font-family: ABCSansNovaRegular;
+  src: url(../fonts/ABCSansNova-Regular.otf);
+}
+@font-face {
+  font-family: ABCSansNovaBlack;
+  src: url(../fonts/ABCSansNova-Black.otf);
+}
+@font-face {
+  font-family: ABCSansNovaLight;
+  src: url(../fonts/ABCSansNova-Light.otf);
+}
+:root {
+  font-size: 1.1em;
+  font-family: ABCSansNovaRegular, Helvetica, sans-serif;
+  color: #001533;
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+}
+#chart {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+#line {  
+  clip-path: url(#clipPath);
+  fill: none;
+  stroke: #cc4e00;
+  stroke-width: 4;
+}
+#axisGroup {
+  opacity: 0;
+}
+.axis .domain {
+  stroke: none;
+}
+.axis .tick text {
+  font-size: .8rem;
+  fill: slategrey;
+}
+
+@media only screen and (max-width: 600px) {
+  :root {
+    font-size: 1em;
+  }
+}

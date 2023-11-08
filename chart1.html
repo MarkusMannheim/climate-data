@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <title>Climate data chart 1</title>
+    <meta name="author" content="Markus Mannheim">
+    <meta name="keywords" content="abc, climate, data, specialist, carbon, markus, mannheim, job, application, interview">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- scripts -->
+    <script src="./resources/d3.v7.min.js"></script>
+    <link href="./resources/widget.css" rel="stylesheet">
+    <link href="./resources/abcLogo64.png" rel="icon">
+  </head>
+
+  <body>
+    <div id="holder">
+      <div id="date">1990</div>
+      <div id="emissions">353.7ppm +0.0%</div>
+      <div id="note">compared with 1990 levels</div>
+    </div>
+
+    <script>
+      // elements
+      holder = d3.select("#holder");
+      date = d3.select("#date");
+      emissions = d3.select("#emissions");
+      note = d3.select("#note");
+
+      // load data
+      d3.csv("./data/chart1.csv")
+        .then((data) => {
+          // format data
+          chartData = data
+            .map(d => {
+              return {
+                date: new Date(+d.year, +d.month - 1, 1),
+                average: +d.average,
+                trend: +d.trend
+              };
+            });
+
+          // await fonts
+            document.fonts.onloadingdone = drawChart();
+          });
+      
+      function drawChart() {
+        window.addEventListener("resize", resize);
+        resize();
+        
+        colours = d3.scaleSequential(d3.interpolateRdYlGn)
+          .domain(d3.extent(chartData, d => d.average));
+          
+        holder.transition()
+          .style("opacity", 1);
+
+        date.transition()
+          .delay(1000)
+          .duration(3000)
+          .style("color", colours.range()[0])
+          .textTween(() => {
+            let length = chartData.length - 1;
+            return t => {
+              return d3.timeFormat("%Y")(chartData[Math.floor(t * length)].date);
+            }
+          });
+        
+        emissions.transition()
+          .delay(1000)
+          .duration(3000)
+          .textTween(() => {
+            let length = chartData.length - 1;
+            return t => {
+              return d3.format("+0.1%")(chartData[Math.floor(t * length)].trend / chartData[0].trend - 1);
+            }
+          });
+      }
+
+      function resize() {
+        dimensions = document.getElementById("holder").getBoundingClientRect();
+        width = dimensions.width;
+        height = dimensions.height;
+        margin = {top: 25, bottom: 25, left: 25, right: 25};
+        min = Math.min(width, height);
+
+      }
+      
+    </script>
+  </body>
+</html>

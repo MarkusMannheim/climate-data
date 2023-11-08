@@ -11,94 +11,98 @@
   src: url(../fonts/ABCSansNova-Light.otf);
 }
 :root {
-  font-size: 1em;
+  font-size: 1.1em;
   font-family: ABCSansNovaRegular, Helvetica, sans-serif;
   color: #001533;
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  overflow: hidden;
 }
 #container {
-  width: 100%;  
+  margin: 1rem 25%;
+  width: 50%;  
   display: flex;
   flex-flow: column;
 }
-#chart {
-  height: 1404px;
+h1 {
+  text-align: center;
+  font-family: ABCSansNovaBlack;
+  color: #037cc2;
+  font-size: 2rem;
+  margin: 0 0 2rem 0;
 }
-#footer {
-  font-family: ABCSansNovaLight, "Arial Narrow", Helvetica, sans-serif;
-  margin-top: 10px;
-  font-size: .9rem;
-  color: #888;
-}
-#axisGroup #axisLabel {
-  fill: #001533;
+h2 {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
   font-size: 1.1rem;
-  text-anchor: start;
+  margin: 0 0 1.1rem 0;
 }
-#axisGroup .domain {
-  stroke: none;
+h3 {
+  font-family: ABCSansNovaBlack;
+  font-size: 1.25rem;
+  text-align: center;
+  margin: 0 0 1.25rem 0;
 }
-#axisGroup .tick line {
-  stroke: #8495a9;
-  stroke-dasharray: 2 2;
+h4 {
+  color: slategrey;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin: 1.25rem 0;
 }
-#axisGroup .tick text {  
-  font-size: 1rem;
-  fill: #001533;
+p, ul {
+  margin: 0 0 1rem 0;
 }
-.temperature {
-  fill: #037cc2;
-  opacity: .5;
-  stroke: white;
+span {
+  font-family: ABCSansNovaBlack;
+  color: #037cc2;
 }
-.temperature.week {
-  fill: #cc4e00;
-  opacity: 1;
+.chart {
+  margin-bottom: 1rem;
+  border: none;
+}
+#chart1, #chart3 {
+  height: 150px;
+}
+#chart2, #chart4 {
+  height: 350px;
+}
+a, a:visited {
+  color:  #037cc2;
+  text-decoration: none;
+}
+a:hover {
+  color: gold;
 }
 
 @media only screen and (max-width: 600px) {
-  #axisGroup #axisLabel {
+  :root {
+    font-size: 1em;
+  }
+  #container {
+    margin: 5%;
+    width: 90%;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 0;
+  }
+  h2 {    
     font-size: 1rem;
+    margin: 0 0 1rem 0;
   }
-  #axisGroup .tick text {
-    font-size: .9rem;
+  h3 {
+    font-size: 1.1rem;
+    margin: 0 0 1.1rem 0;
   }
-  #footer {
-    font-size: .8rem;
+  h4 {    
+    font-size: 1.1rem;
+    margin: 1.1rem 0;
   }
-}
+  .chart {
+  
+  }
+  
 
-@media (prefers-color-scheme: dark) {
-  body.darkMode {
-    color: white;
-    background: black;
-  }
-  .darkMode #axisGroup .tick line {
-    stroke: #ccc;
-  }
-  .darkMode #axisGroup .tick text {
-    fill: white;
-  }  
-  .darkMode #footer {
-    color: #e6e6e6;
-  }
-  .darkMode #axisGroup #axisLabel {
-    fill: white;
-  }
-  .darkMode #axisGroup .tick line {
-    stroke: #ccc;
-  }
-  .darkMode #axisGroup .tick text {  
-    fill: #e6e6e6;
-  }
-  .darkMode .temperature {
-    opacity: .75;
-  }
-  .darkMode .temperature.week {
-    opacity: 1;
-  }
 }

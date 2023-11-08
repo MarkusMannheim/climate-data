@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8">
+    <title>Climate data chart 1</title>
+    <meta name="author" content="Markus Mannheim">
+    <meta name="keywords" content="abc, climate, data, specialist, carbon, markus, mannheim, job, application, interview">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- scripts -->
+    <script src="./resources/d3.v7.min.js"></script>
+    <link href="./resources/chart.css" rel="stylesheet">
+    <link href="./resources/abcLogo64.png" rel="icon">
+  </head>
+
+  <body>
+    <svg id="chart">
+        <g id="chartGroup">
+            <defs>
+                <clipPath id="clipPath">
+                    <rect></rect>
+                </clipPath>
+            </defs>
+            <path id="line"></path>
+        </g>
+        <g id="axisGroup" class="axis"></g>
+    </svg>
+
+    <script>
+      // elements
+      chart = d3.select("#chart");
+      chartGroup = d3.select("#chartGroup");
+      axisGroup = d3.select("#axisGroup");
+      clipPath = d3.select("#clipPath");
+      line = d3.select("#line");
+
+      // load data
+      d3.csv("./data/chart1.csv")
+        .then((data) => {
+          // format data
+          chartData = data
+            .map(d => {
+              return {
+                date: new Date(+d.year, +d.month - 1, 1),
+                trend: +d.trend
+              };
+            });
+
+          // await fonts
+            document.fonts.onloadingdone = drawChart();
+          });
+      
+      function drawChart() {
+        window.addEventListener("resize", resize);
+        resize();
+
+        showData = chartData.slice(0, );
+
+        x = d3.scaleTime()
+            .domain(d3.extent(chartData, d => d.date)).nice()
+            .range([margin.left, width - margin.right]);
+        
+        y = d3.scaleLinear()
+            .domain([0, d3.max(chartData, d => d.trend)])
+            .range([height - margin.bottom, margin.top]);
+
+        linePath = d3.line()
+            .x(d => x(d.date))
+            .y(d => y(d.trend));
+
+        line.attr("d", linePath(chartData));
+
+        clipPath.select("rect")
+            .attr("x", margin.left - 5)
+            .attr("y", margin.top - 5)
+            .attr("width", 0)
+            .attr("height", height - margin.top - margin.bottom + 10)
+            .transition()
+                .delay(1000)
+                .duration(2500)
+                .attr("width", width - margin.right + 5);
+
+        axis = d3.axisBottom(x)
+            .tickSize(0)
+            .ticks(5, "%Y");
+
+        axisGroup.attr("transform", "translate(0, " + (height - margin.bottom) + ")")
+            .transition()
+                .duration(1000)
+                .call(axis)
+                .style("opacity", 1);
+            
+
+      }
+
+      function resize() {
+        dimensions = document.getElementById("chart").getBoundingClientRect();
+        width = dimensions.width;
+        height = dimensions.height;
+        margin = {top: 25, bottom: 25, left: 25, right: 25};
+
+      }
+      
+    </script>
+  </body>
+</html>
