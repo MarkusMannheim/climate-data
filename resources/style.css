@@ -1,0 +1,104 @@
+@font-face {
+  font-family: ABCSansNovaRegular;
+  src: url(../fonts/ABCSansNova-Regular.otf);
+}
+@font-face {
+  font-family: ABCSansNovaBlack;
+  src: url(../fonts/ABCSansNova-Black.otf);
+}
+@font-face {
+  font-family: ABCSansNovaLight;
+  src: url(../fonts/ABCSansNova-Light.otf);
+}
+:root {
+  font-size: 1em;
+  font-family: ABCSansNovaRegular, Helvetica, sans-serif;
+  color: #001533;
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+}
+#container {
+  width: 100%;  
+  display: flex;
+  flex-flow: column;
+}
+#chart {
+  height: 1404px;
+}
+#footer {
+  font-family: ABCSansNovaLight, "Arial Narrow", Helvetica, sans-serif;
+  margin-top: 10px;
+  font-size: .9rem;
+  color: #888;
+}
+#axisGroup #axisLabel {
+  fill: #001533;
+  font-size: 1.1rem;
+  text-anchor: start;
+}
+#axisGroup .domain {
+  stroke: none;
+}
+#axisGroup .tick line {
+  stroke: #8495a9;
+  stroke-dasharray: 2 2;
+}
+#axisGroup .tick text {  
+  font-size: 1rem;
+  fill: #001533;
+}
+.temperature {
+  fill: #037cc2;
+  opacity: .5;
+  stroke: white;
+}
+.temperature.week {
+  fill: #cc4e00;
+  opacity: 1;
+}
+
+@media only screen and (max-width: 600px) {
+  #axisGroup #axisLabel {
+    font-size: 1rem;
+  }
+  #axisGroup .tick text {
+    font-size: .9rem;
+  }
+  #footer {
+    font-size: .8rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body.darkMode {
+    color: white;
+    background: black;
+  }
+  .darkMode #axisGroup .tick line {
+    stroke: #ccc;
+  }
+  .darkMode #axisGroup .tick text {
+    fill: white;
+  }  
+  .darkMode #footer {
+    color: #e6e6e6;
+  }
+  .darkMode #axisGroup #axisLabel {
+    fill: white;
+  }
+  .darkMode #axisGroup .tick line {
+    stroke: #ccc;
+  }
+  .darkMode #axisGroup .tick text {  
+    fill: #e6e6e6;
+  }
+  .darkMode .temperature {
+    opacity: .75;
+  }
+  .darkMode .temperature.week {
+    opacity: 1;
+  }
+}

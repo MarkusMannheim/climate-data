@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155991615-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "UA-155991615-1");
+    </script>
+
+    <!-- metaphysics -->
+    <meta charset="utf-8">
+    <title>September temperatures</title>
+    <meta name="author" content="Markus Mannheim">
+    <meta name="keywords" content="act, canberra, airport, climate, weather, temperature, celsius, degrees">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- scripts -->
+    <script src="./resources/d3.v7.min.js"></script>
+    <link href="./resources/september.css" rel="stylesheet">
+    <link href="./resources/abcLogo64.png" rel="icon">
+  </head>
+
+  <body>
+    <div id="container">
+      <svg id="chart">
+        <g id="axisGroup">
+          <text id="axisLabel">Maximum temperatures in September</text>
+        </g>
+        <g id="chartGroup"></g>
+      </svg>
+      <div id="footer">Daily temperatures (degrees Celsius) recorded at Canberra Airport since 1939. Source: Bureau of Meteorology</div>
+    </div>
+
+    <script>
+      // elements
+      container = d3.select("#container");
+      chart = d3.select("#chart");
+      chartGroup = d3.select("#chartGroup");      
+      axisGroup = d3.select("#axisGroup");
+      axisLabel = d3.select("#axisLabel");
+      footer = d3.select("#footer");
+
+      // dark mode
+      darkModeCheck();
+
+      // load data
+      d3.csv("./data/september.csv")
+        .then((data) => {
+          chartData = data
+            .map(d => {
+              d.date = new Date(d.date);
+              d.maximum = +d.maximum;
+              d.week = d.week == "True";
+              return d;
+            });         
+
+          // await fonts
+          document.fonts.onloadingdone = drawChart();
+        });
+
+      function drawChart() {
+        window.addEventListener("resize", resize);
+        resize();
+      }
+
+      function resize() {
+        dimensions = document.getElementById("chart").getBoundingClientRect();
+        width = dimensions.width;
+        height = width * 2;
+        mobile = width < 500;
+
+        chart.style("height", height + "px");
+
+        // send dimensions to host window
+        window.parent.postMessage({
+          sentinel: "amp",
+          type: "embed-size",
+          height: (document.getElementById("container").getBoundingClientRect().height)
+        }, "*");
+
+        radius = width / 65;
+        margin = { top: 35, right: 10, bottom: 10, left: 25};
+
+        // prepare chart
+        y = d3.scaleLinear()
+          .domain(d3.extent(chartData, d => d.maximum))
+          .range([height - margin.bottom, margin.top]);
+
+        axis = d3.axisLeft(y)
+          .ticks(mobile ? 5 : 10)
+          .tickPadding(5)
+          .tickSizeOuter(0)
+          .tickSizeInner(margin.left + margin.right - width);
+
+        axisGroup.attr("transform", "translate(" + margin.left + ", 0)")
+          .call(axis);
+        axisLabel.attr("x", -margin.left)
+          .attr("y", margin.top - 15);
+
+        beeswarm = beeswarmForce()
+          .x(width / 2)
+          .y(d => y(d.maximum));
+
+        temperatures = chartGroup
+          .selectAll(".temperature")
+            .data(beeswarm(chartData))
+          .join("circle")
+            .attr("class", d => d.data.week ? "week temperature" : "temperature")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", radius);                        
+      }
+
+      function beeswarmForce() {
+        let x = d => d[0];
+        let y = d => d[1];
+        let ticks = 75;
+
+        function beeswarm(data) {
+          const entries = data.map(d => {
+            return {
+              x0: typeof x === "function" ? x(d) : x,
+              y0: typeof y === "function" ? y(d) : y,
+              data: d
+            }
+          });
+          const simulation = d3.forceSimulation(entries)
+              .force("x", d3.forceX(d => d.x0))
+              .force("y", d3.forceY(d => d.y0))
+              .force("collide", d3.forceCollide(radius))
+              .alphaDecay(.04);
+          for (let i = 0; i < ticks; i++) simulation.tick();
+          return entries;
+        }
+
+        beeswarm.x = f => f ? (x = f, beeswarm) : x;
+        beeswarm.y = f => f ? (y = f, beeswarm) : y;
+        beeswarm.ticks = n => n ? (ticks = n, beeswarm) : ticks;
+        
+        return beeswarm;
+      }      
+
+      function darkModeCheck() {
+        let testString = window && window.location !== window.parent.location ?
+          document.referrer :
+          document.location.href;
+        
+        let darkMode = testString
+          .includes("newsapp");
+
+        d3.select("body")
+          .classed("darkMode", darkMode);
+      }
+    </script>
+  </body>
+</html>
